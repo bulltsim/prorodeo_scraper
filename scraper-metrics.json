@@ -1,0 +1,90 @@
+{
+  "id": null,
+  "title": "ProRodeo Scraper",
+  "timezone": "browser",
+  "schemaVersion": 37,
+  "version": 1,
+  "panels": [
+    {
+      "type": "stat",
+      "title": "Pages Scraped",
+      "targets": [
+        { "expr": "sum(pages_scraped_total)", "legendFormat": "Pages" }
+      ],
+      "id": 1
+    },
+    {
+      "type": "stat",
+      "title": "Stocks Processed",
+      "targets": [
+        { "expr": "sum(stocks_processed_total)", "legendFormat": "Stocks" }
+      ],
+      "id": 2
+    },
+    {
+      "type": "stat",
+      "title": "Errors",
+      "targets": [
+        { "expr": "sum(scraper_errors_total)", "legendFormat": "Errors" }
+      ],
+      "id": 3
+    },
+    {
+      "type": "gauge",
+      "title": "Queue Remaining",
+      "targets": [
+        { "expr": "avg(queue_remaining)" }
+      ],
+      "id": 4,
+      "options": { "min": 0, "max": 10000000 }
+    },
+    {
+      "type": "timeseries",
+      "title": "Scraping Throughput (rides/sec)",
+      "targets": [
+        { "expr": "rate(stocks_processed_total[5m])", "legendFormat": "Throughput" }
+      ],
+      "id": 5
+    },
+    {
+      "type": "timeseries",
+      "title": "Error Rate",
+      "targets": [
+        { "expr": "rate(scraper_errors_total[5m])", "legendFormat": "Errors/sec" }
+      ],
+      "id": 6
+    },
+    {
+      "type": "timeseries",
+      "title": "Pages Scraped Rate",
+      "targets": [
+        { "expr": "rate(pages_scraped_total[5m])", "legendFormat": "Pages/sec" }
+      ],
+      "id": 7
+    },
+    {
+      "type": "timeseries",
+      "title": "Queue Remaining Trend",
+      "targets": [
+        { "expr": "queue_remaining", "legendFormat": "Remaining" }
+      ],
+      "id": 8
+    },
+    {
+      "type": "stat",
+      "title": "Estimated Time Remaining",
+      "targets": [
+        {
+          "expr": "(avg(queue_remaining) / rate(stocks_processed_total[5m]))",
+          "legendFormat": "Seconds"
+        }
+      ],
+      "id": 9
+    }
+  ],
+  "refresh": "10s",
+  "time": {
+    "from": "now-15m",
+    "to": "now"
+  }
+}
