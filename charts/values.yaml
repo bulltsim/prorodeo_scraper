@@ -1,0 +1,39 @@
+image:
+  repository: ghcr.io/yourorg/prorodeo-scraper
+  tag: latest
+
+namespace: rodeo
+
+db:
+  host: your-db-host
+  name: prorodeo
+  user: prorodeo_user
+  pass: securepassword
+
+s3:
+  accessKey: your-access-key
+  secretKey: your-secret-key
+  region: us-east-1
+  bucket: rodeo-data
+
+scraper:
+  indexUrl: https://www.prorodeo.com/stock
+  workersPerPod: 10
+  headless: true
+  proxy: ""
+  testMode: false
+  limit: ""
+  indexOnly: false
+  resume: true
+
+job:
+  completions: 10
+  parallelism: 10
+
+metrics:
+  port: 8000
+  prometheusReleaseLabel: prometheus
+
+exportCron:
+  enabled: true
+  schedule: "30 6 * * *"
