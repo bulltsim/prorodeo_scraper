@@ -1,0 +1,37 @@
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: prorodeo-scrape
+  namespace: {{ .Values.namespace }}
+spec:
+  completions: {{ .Values.job.completions }}
+  parallelism: {{ .Values.job.parallelism }}
+  completionMode: NonIndexed
+  template:
+    metadata:
+      labels:
+        app: prorodeo-scraper
+    spec:
+      restartPolicy: OnFailure
+      containers:
+        - name: scraper
+          image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
+          imagePullPolicy: {{ .Values.image.pullPolicy }}
+          envFrom:
+            - secretRef:
+                name: prorodeo-db
+            - secretRef:
+                name: prorodeo-s3
+            - configMapRef:
+                name: prorodeo-config
+          ports:
+            - containerPort: {{ .Values.metrics.port }}
+          command: ["/bin/sh","-lc"]
+          args:
+            - >
+              python prorodeo_scraper.py
+              --workers ${WORKERS}
+              --headless
+              --resume
+              --index-url ${INDEX_URL}
+              --export
