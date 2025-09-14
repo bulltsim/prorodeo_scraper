@@ -1,0 +1,8 @@
+playwright
+playwright-stealth
+beautifulsoup4
+aiosqlite
+pandas
+pyarrow
+prometheus-client
+boto3
