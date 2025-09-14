@@ -1,0 +1,36 @@
+{{- if .Values.exportCron.enabled }}
+apiVersion: batch/v1
+kind: CronJob
+metadata:
+  name: prorodeo-export-nightly
+  namespace: {{ .Values.namespace }}
+spec:
+  schedule: "{{ .Values.exportCron.schedule }}"
+  jobTemplate:
+    spec:
+      template:
+        spec:
+          restartPolicy: OnFailure
+          containers:
+            - name: exporter
+              image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
+              envFrom:
+                - secretRef:
+                    name: prorodeo-db
+                - secretRef:
+                    name: prorodeo-s3
+                - configMapRef:
+                    name: prorodeo-config
+              command: ["/bin/sh","-lc"]
+              args:
+                - >
+                  python -c "import os,subprocess,datetime,glob; from pathlib import Path;
+                  subprocess.run('python prorodeo_scraper.py --resume --index-only --export', shell=True);
+                  ts=datetime.datetime.utcnow().strftime('%Y-%m-%dT%H-%M-%SZ');
+                  import boto3;
+                  s3=boto3.client('s3', region_name=os.environ['AWS_DEFAULT_REGION']);
+                  for f in glob.glob('exports/*'):
+                      key=f'rodeo-data/exports/{ts}/'+os.path.basename(f);
+                      s3.upload_file(f, os.environ['S3_BUCKET'], key);
+                  print('Uploaded exports', ts)"
+{{- end }}
