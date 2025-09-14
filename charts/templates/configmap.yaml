@@ -1,0 +1,15 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: prorodeo-config
+  namespace: {{ .Values.namespace }}
+data:
+  INDEX_URL: "{{ .Values.scraper.indexUrl }}"
+  METRICS_PORT: "{{ .Values.metrics.port }}"
+  WORKERS: "{{ .Values.scraper.workersPerPod }}"
+  HEADLESS: "{{ .Values.scraper.headless }}"
+  PROXY: "{{ .Values.scraper.proxy }}"
+  TEST_MODE: "{{ .Values.scraper.testMode }}"
+  LIMIT: "{{ .Values.scraper.limit }}"
+  INDEX_ONLY: "{{ .Values.scraper.indexOnly }}"
+  RESUME: "{{ .Values.scraper.resume }}"
