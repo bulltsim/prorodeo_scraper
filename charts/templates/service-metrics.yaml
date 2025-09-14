@@ -1,0 +1,14 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: prorodeo-metrics
+  namespace: {{ .Values.namespace }}
+  labels:
+    app: prorodeo-scraper
+spec:
+  selector:
+    app: prorodeo-scraper
+  ports:
+    - name: http-metrics
+      port: {{ .Values.metrics.port }}
+      targetPort: {{ .Values.metrics.port }}
